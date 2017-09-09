@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "43833456594",
+    "firebase_url": "https://ur-buddy.firebaseio.com",
+    "project_id": "ur-buddy",
+    "storage_bucket": "ur-buddy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:43833456594:android:e1e3a31cc56907e8",
+        "android_client_info": {
+          "package_name": "com.shivendra.hp.urbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "43833456594-tkh5gdrgt6262oou7tmrgpcjr001poj5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbdZjkKL_WffNC3dMMVVabXxwR6vnWiSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:43833456594:android:afce6603948bf6b5",
+        "android_client_info": {
+          "package_name": "com.iiitkottayam.sam.urbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "43833456594-maa08oet7nfse6b1ki18fb46r5e70nd5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iiitkottayam.sam.urbuddy",
+            "certificate_hash": "ad107f81b4ac0de3c6b020f0a6b1011fb2ead1c3"
+          }
+        },
+        {
+          "client_id": "43833456594-tkh5gdrgt6262oou7tmrgpcjr001poj5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbdZjkKL_WffNC3dMMVVabXxwR6vnWiSc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "43833456594-tkh5gdrgt6262oou7tmrgpcjr001poj5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

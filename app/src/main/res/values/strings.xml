@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">UrBuddy</string>
+    <!-- Strings related to login and signup-->
+    <string name="email">Email-ID</string>
+    <string name="login">Login</string>
+    <string name="resendotp">Resend OTP</string>
+    <string name="submit">Submit</string>
+    <string name="checkmail">Please check your email for</string>
+    <string name="password">Password</string>
+    <string name="cpassword">Confirm Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="ask_signup">New here? Sign Up</string>
+    <string name="ask_signin">Already Registered? Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="fillall">Please Fill All Fields</string>
+    <string name="validid">Please Enter valid Email</string>
+    <string name="passlen">Password should be greater than 7 chars.</string>
+    <string name="nologin">Looks Like You need To sign Up.</string>
+    <string name="no_valid_domain">Your Domain is not Registered ! \n Please Contact Your Institution</string>
+    <string name="no_internet">Your Device Has No Active Connections</string>
+    <string name="confAgain">Again Confirm password</string>
+    <string name="success">Registration successful</string>
+    <string name="verifyemail">Verify Your Email. Click on link send to your ID</string>
+    <string name="resetLink">Reset link have been send to your email ID successfully</string>
+    <string name="log_out">Log Out</string>
+    <string name="promptnumber">Please select the quantity</string>
+    <string-array name="numbers">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string name="dev_email_id">shivendra15@iiitkottayam.ac.in</string>
+    <string name="dev_mob">09455428103</string>
+    <string name="team_ur_buddy">Shivendra Singh</string>
+</resources>
