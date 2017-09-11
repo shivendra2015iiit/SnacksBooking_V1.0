@@ -67,18 +67,21 @@ public class main extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork != null) {
+
             firebaseAuth = FirebaseAuth.getInstance();
             currentUser = firebaseAuth.getCurrentUser();
+
 
             //setting action bar as current users details
             ActionBar ab = getSupportActionBar();
             ab.setTitle("Logged in as ");
             ab.setSubtitle(firebaseAuth.getCurrentUser().getEmail());
 
-            //
+            user = currentUser.getEmail().split("@");
+
             DatabaseReference smenuroot = FirebaseDatabase.getInstance().getReferenceFromUrl("https://ur-buddy.firebaseio.com");
 
-            mRootRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://ur-buddy.firebaseio.com/Users");
+            mRootRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://ur-buddy.firebaseio.com/Users/"+user[0]);
             //
 
             if (isTimeAutomatic(getApplicationContext())) {
@@ -86,10 +89,10 @@ public class main extends AppCompatActivity {
 
 
                 String date = currentTime + "";
-                SimpleDateFormat formatter_from = new SimpleDateFormat("EEE MMM dd hh:mm:ss ZZ yyyy");
+                SimpleDateFormat formatter_from = new SimpleDateFormat("EEE MMM dd kk:mm:ss ZZ yyyy");
                 final SimpleDateFormat formatter_to = new SimpleDateFormat("dd/MMM/yyyy");
                 SimpleDateFormat format_day = new SimpleDateFormat("EEE");
-                SimpleDateFormat formatter_time = new SimpleDateFormat("HH:mm");     // to check if formater
+                SimpleDateFormat formatter_time = new SimpleDateFormat("kk:mm");     // to check if formater
                 try {
                     d = formatter_from.parse(date);
                     final String wday = format_day.format(d);
@@ -99,19 +102,18 @@ public class main extends AppCompatActivity {
                     t = formatter_time.parse(time);
                     f = formatter_time.parse("11:59");             /// this we have to get from database
 
-                    //setting menu
+                    // trial code//////////////////////////////////////////////////////////
 
                     smenuroot.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 if (ds.getKey().equals("SnackMenu")) {
                                     menureading menu = new menureading();
                                     menu.setMenuvalue(ds.child(wday).getValue().toString());
                                     String menuvalue = menu.getMenuvalue();
                                     menu_price.setText(menuvalue);
-                                    progressDialog.dismiss();
+
                                 }
                             }
 
@@ -122,58 +124,65 @@ public class main extends AppCompatActivity {
 
                         }
                     });
-                    //
-                    if (f.after(t)) {
-                        // checking time constraint
+                    if (f.after(t)) {                        //change to after
 
-                        user = currentUser.getEmail().split("@");
-                        DatabaseReference childRef = mRootRef.child(user[0]);
-                        final DatabaseReference secondChild = childRef.child("Flag");
-                        final DatabaseReference thirdChild = childRef.child("Quantity");
-                        final DatabaseReference fourthChild = childRef.child("Update Date");
-                        secondChild.setValue("0");             //removing credibility and for checkin databse already created or not
+
                         mRootRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                                if(dataSnapshot.getChildrenCount()==0){
+                                    mRootRef.child("Flag").setValue("0");
+                                    mRootRef.child("Quantity").setValue("0");
+                                    mRootRef.child("Update Date").setValue("04/Sep/2017");
+                                }
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    if (!ds.hasChild("Quantity")) {
-                                        secondChild.setValue("1");
-                                        thirdChild.setValue("1");
-                                        fourthChild.setValue("04/Sep/2017");           //dummy date
-                                    }
-                                    String Udate = ds.child("Update Date").getValue().toString();
-                                    try {
-                                        Date Updated = formatter_to.parse(Udate);
-                                        if (day.before(Updated) || day.equals(Updated)) {
 
-                                            Intent in = new Intent(main.this, Already_done.class);
-                                            startActivity(in);
-                                            main.this.finish();
-                                            break;
+                                    try {
+                                        if (ds.getKey().equals("Update Date")) {
+
+                                            if (ds.getValue() != null) {
+                                                String Udate = ds.getValue().toString();
+                                                Date Updated = formatter_to.parse(Udate);
+                                                if (day.before(Updated) || day.equals(Updated)) {
+                                                    progressDialog.dismiss();
+                                                    Intent in = new Intent(main.this, Already_done.class);
+                                                    startActivity(in);
+                                                    main.this.finish();
+                                                    break;
+                                                }
+                                                else{
+                                                    progressDialog.dismiss();
+                                                }
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Database error", Toast.LENGTH_SHORT).show();
+                                                main.this.finish();
+                                                break;
+                                            }
                                         }
+
+//
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
                                 }
-
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
+
                         });
-
-
-                        // variable day is to be compared with database stored day
                     } else {
-                        progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Out of Order Time", Toast.LENGTH_LONG).show();
-                        Intent in = new Intent(main.this, Already_done.class);
-                        startActivity(in);
-                        main.this.finish();
-                    }
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Out of Order Time", Toast.LENGTH_LONG).show();
+                            Intent in = new Intent(main.this, Already_done.class);
+                            startActivity(in);
+                            main.this.finish();
+                        }
+
+
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -196,7 +205,7 @@ public class main extends AppCompatActivity {
     }
 
     public void acceptpressed(View v) {
-        final String text = mySpinner.getSelectedItem().toString();
+       final String text = mySpinner.getSelectedItem().toString();
 
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -207,89 +216,44 @@ public class main extends AppCompatActivity {
             if (isTimeAutomatic(getApplicationContext())) {
                 currentTime = Calendar.getInstance().getTime();
 
+                ///////////////////////////////////////////////////////////
                 String date = currentTime + "";
-                SimpleDateFormat formatter_from = new SimpleDateFormat("EEE MMM dd hh:mm:ss ZZ yyyy");
+                SimpleDateFormat formatter_from = new SimpleDateFormat("EEE MMM dd kk:mm:ss ZZ yyyy");
                 final SimpleDateFormat formatter_to = new SimpleDateFormat("dd/MMM/yyyy");
-                SimpleDateFormat formatter_time = new SimpleDateFormat("HH:mm");     // to check if formater
+                SimpleDateFormat format_day = new SimpleDateFormat("EEE");
+                SimpleDateFormat formatter_time = new SimpleDateFormat("kk:mm");     // to check if formater
                 try {
                     d = formatter_from.parse(date);
                     time = formatter_time.format(d);
                     dy = formatter_to.format(d);
                     day = formatter_to.parse(dy);
-                    t = formatter_time.parse(time);             // to compare again converting
+                    t = formatter_time.parse(time);
                     f = formatter_time.parse("11:59");             /// this we have to get from database
 
 
-                    if (f.after(t)) {                         // checking time constraint                   // change to before later
 
+                    if (f.after(t)) {
 
-                        user = currentUser.getEmail().split("@");
-                        DatabaseReference childRef = mRootRef.child(user[0]);
-                        final DatabaseReference secondChild = childRef.child("Flag");
-                        final DatabaseReference thirdChild = childRef.child("Quantity");
-                        final DatabaseReference fourthChild = childRef.child("Update Date");
-
-                        mRootRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                                    userinfo uinfo = new userinfo();
-                                    uinfo.setFlag(ds.child("Flag").getValue().toString());
-                                    uinfo.setQuantity(ds.child("Quantity").getValue().toString());
-                                    uinfo.setUpdate(ds.child("Update Date").getValue().toString());
-
-
-                                    String Udate = uinfo.getUpdate();
-                                    try {
-                                        Date Updated = formatter_to.parse(Udate);
-                                        if (day.after(Updated)) {
-
-                                            secondChild.setValue("1");
-                                            thirdChild.setValue(text);
-                                            fourthChild.setValue(dy);
-                                            Toast.makeText(getApplicationContext(), "Your order have been noted, Happy fooding!", Toast.LENGTH_LONG).show();
-                                            Intent in = new Intent(main.this, Already_done.class);
-                                            startActivity(in);
-
-                                            main.this.finish();
-                                            break;
-
-
-                                        }else{
-                                            Intent in = new Intent(main.this, Already_done.class);
-                                            startActivity(in);
-
-                                            main.this.finish();
-                                            break;
-
-                                        }
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                        // variable day is to be compared with database stored day
+                        mRootRef.child("Flag").setValue("1");
+                        mRootRef.child("Quantity").setValue(text);
+                        mRootRef.child("Update Date").setValue(dy);
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Your order have been noted, Happy fooding!", Toast.LENGTH_LONG).show();
+                        Intent in = new Intent(main.this, Already_done.class);
+                        startActivity(in);
+                        main.this.finish();
                     } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Out of Order Time", Toast.LENGTH_LONG).show();
                         Intent in = new Intent(main.this, Already_done.class);
                         startActivity(in);
                         main.this.finish();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                    //////////////////////////////////////////////////////////
+
+                }catch (ParseException e) {
+                        e.printStackTrace();
+                    }
             } else {
                 progressDialog.dismiss();
                 AlertDialog.Builder dialog = new AlertDialog.Builder(main.this);

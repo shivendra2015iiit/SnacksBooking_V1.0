@@ -15,7 +15,7 @@
     <string name="fillall">Please Fill All Fields</string>
     <string name="validid">Please Enter valid Email</string>
     <string name="passlen">Password should be greater than 7 chars.</string>
-    <string name="nologin">Looks Like You need To sign Up.</string>
+    <string name="nologin">Somthing seems wrong.If you are already registered check username and password</string>
     <string name="no_valid_domain">Your Domain is not Registered ! \n Please Contact Your Institution</string>
     <string name="no_internet">Your Device Has No Active Connections</string>
     <string name="confAgain">Again Confirm password</string>
