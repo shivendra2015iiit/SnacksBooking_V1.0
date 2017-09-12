@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -45,6 +46,13 @@ public class LoginActivity extends AppCompatActivity {
             }
             else{
                 firebaseAuth.signOut();
+                  progressDialog.dismiss();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+                    dialog.setCancelable(false);
+                    dialog.setTitle("Verify YOUR EMAIL ID");
+                    dialog.setMessage("Please verify your email id by clicking on the link sent to your mail id and restart app");
+                    dialog.show();
+
                 Toast.makeText(getApplicationContext(), R.string.verifyemail, Toast.LENGTH_LONG).show();
             }
         }
@@ -79,18 +87,37 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
         //Initializing firebase auth object
-        firebaseAuth =FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
         progressDialog = new ProgressDialog(this);
 
-        email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
+        email = (EditText) findViewById(R.id.email);
+        password = (EditText) findViewById(R.id.password);
         //initializing login button
-        login = (Button)findViewById(R.id.login);
+        login = (Button) findViewById(R.id.login);
         //setting OnClickListner to login
         login.setOnClickListener(onClickListener);
+
+        if (currentUser != null) {
+            if (currentUser.isEmailVerified()) {
+                Intent I = new Intent(getApplicationContext(), main.class);  //launch the main drawer activity
+                startActivity(I);
+                LoginActivity.this.finish();
+            } else {
+                firebaseAuth.signOut();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+                dialog.setCancelable(false);
+                dialog.setTitle("Verify YOUR EMAIL ID");
+                dialog.setMessage("Please verify your email id by clicking on the link sent to your mail id and restart app");
+                dialog.show();
+
+                Toast.makeText(getApplicationContext(), R.string.verifyemail, Toast.LENGTH_LONG).show();
+            }
+
+
+        }
     }
 
     // function to launch signulp activity
@@ -130,12 +157,13 @@ public class LoginActivity extends AppCompatActivity {
             String E = email.getText().toString().trim();
 
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
+            final FirebaseUser[] tempuser = new FirebaseUser[1];
             if(currentUser!=null){
                 if(!currentUser.isEmailVerified()) {
                     firebaseAuth.signOut();
                     Toast.makeText(getApplicationContext(), R.string.verifyemail, Toast.LENGTH_LONG).show();
                 }
+
 
             }else {
                 //checking if username and password are not empty
@@ -179,10 +207,22 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                progressDialog.dismiss();
-                                Intent I = new Intent(getApplicationContext(), main.class);  //launch the main activity
-                                startActivity(I);
-                                LoginActivity.this.finish();
+                                tempuser[0] = firebaseAuth.getCurrentUser();
+                                if(tempuser[0].isEmailVerified()) {
+                                    progressDialog.dismiss();
+                                    Intent I = new Intent(getApplicationContext(), main.class);  //launch the main activity
+                                    startActivity(I);
+                                    LoginActivity.this.finish();
+                                }else{
+                                    firebaseAuth.signOut();
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+                                    dialog.setCancelable(false);
+                                    dialog.setTitle("Verify YOUR EMAIL ID");
+                                    dialog.setMessage("Please verify your email id by clicking on the link sent to your mail id and restart app");
+                                    dialog.show();
+
+                                    Toast.makeText(getApplicationContext(), R.string.verifyemail, Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 progressDialog.dismiss();
                                 Toast.makeText(LoginActivity.this,
@@ -206,10 +246,7 @@ public class LoginActivity extends AppCompatActivity {
     };
     // function to varify domains
     public boolean checkdomain(String email) {
-        if (email.contains("@iiitkottayam.ac.in")) {
-            return true;
-        }
-        return false;
+        return email.contains("@iiitkottayam.ac.in");
     }
 
 

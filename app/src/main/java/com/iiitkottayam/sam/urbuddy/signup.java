@@ -151,10 +151,7 @@ public class signup extends AppCompatActivity {
     }
     // function to varify domains
     public boolean checkdomain(String email) {
-        if (email.contains("@iiitkottayam.ac.in")) {
-            return true;
-        }
-        return false;
+        return email.contains("@iiitkottayam.ac.in");
     }
 
     // function to launch signin activity

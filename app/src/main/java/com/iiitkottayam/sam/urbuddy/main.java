@@ -81,7 +81,7 @@ public class main extends AppCompatActivity {
 
             DatabaseReference smenuroot = FirebaseDatabase.getInstance().getReferenceFromUrl("https://ur-buddy.firebaseio.com");
 
-            mRootRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://ur-buddy.firebaseio.com/Users/"+user[0]);
+            mRootRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://ur-buddy.firebaseio.com/User/"+user[0]);
             //
 
             if (isTimeAutomatic(getApplicationContext())) {
@@ -100,7 +100,7 @@ public class main extends AppCompatActivity {
                     dy = formatter_to.format(d);
                     day = formatter_to.parse(dy);
                     t = formatter_time.parse(time);
-                    f = formatter_time.parse("11:59");             /// this we have to get from database
+                    f = formatter_time.parse("11:59");
 
                     // trial code//////////////////////////////////////////////////////////
 
@@ -307,7 +307,7 @@ public class main extends AppCompatActivity {
 
                 Bundle extras = intent.getExtras();
 
-                NetworkInfo info = (NetworkInfo) extras
+                NetworkInfo info = extras
                         .getParcelable("networkInfo");
 
                 NetworkInfo.State state = info.getState();
@@ -326,7 +326,7 @@ public class main extends AppCompatActivity {
         };
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver((BroadcastReceiver) br, intentFilter);
+        registerReceiver(br, intentFilter);
     }
 
 
